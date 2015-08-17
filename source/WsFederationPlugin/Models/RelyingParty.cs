@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
+using IdentityModel.Constants;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens;
 using System.Security.Cryptography.X509Certificates;
-using Thinktecture.IdentityModel.Constants;
 
-namespace Thinktecture.IdentityServer.WsFederation.Models
+namespace IdentityServer3.WsFederation.Models
 {
     /// <summary>
     /// Models a WS-Federation relying party

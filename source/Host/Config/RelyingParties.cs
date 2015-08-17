@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using IdentityServer3.WsFederation.Models;
+using System.Collections.Generic;
 using System.Security.Claims;
-using Thinktecture.IdentityServer.WsFederation.Models;
 
 namespace Host.Config
 {
@@ -16,7 +16,7 @@ namespace Host.Config
                     Name = "Test RP",
                     Enabled = true,
                     ReplyUrl = "https://web.local/idsrvrp/",
-                    TokenType = Thinktecture.IdentityModel.Constants.TokenTypes.Saml2TokenProfile11,
+                    TokenType = IdentityModel.Constants.TokenTypes.Saml2TokenProfile11,
                     TokenLifeTime = 60,
 
                     ClaimMappings = new Dictionary<string,string>
@@ -31,7 +31,7 @@ namespace Host.Config
                     Realm = "urn:owinrp",
                     Enabled = true,
                     ReplyUrl = "http://localhost:10313/",
-                    TokenType = Thinktecture.IdentityModel.Constants.TokenTypes.JsonWebToken,
+                    TokenType = IdentityModel.Constants.TokenTypes.JsonWebToken,
                     TokenLifeTime = 60,
 
                     ClaimMappings = new Dictionary<string, string>

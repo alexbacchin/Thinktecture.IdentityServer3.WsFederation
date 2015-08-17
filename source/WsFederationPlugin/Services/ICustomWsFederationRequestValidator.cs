@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-using IdentityServer3.WsFederation.Models;
+using IdentityServer3.WsFederation.Validation;
 using System.Threading.Tasks;
 
 namespace IdentityServer3.WsFederation.Services
 {
     /// <summary>
-    /// Implements retrieval of relying party configuration
+    /// Allows inserting custom validation logic into sign in requests
     /// </summary>
-    public interface IRelyingPartyService
+    public interface ICustomWsFederationRequestValidator
     {
         /// <summary>
-        /// Retrieves a relying party by realm.
+        /// Custom validation logic for the sign in request.
         /// </summary>
-        /// <param name="realm">The realm.</param>
-        /// <returns>The relying party</returns>
-        Task<RelyingParty> GetByRealmAsync(string realm);
+        /// <param name="request">The validated request.</param>
+        /// <returns>The validation result</returns>
+        Task<SignInValidationResult> ValidateSignInRequestAsync(SignInValidationResult request);
     }
 }

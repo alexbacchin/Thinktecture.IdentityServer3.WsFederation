@@ -14,28 +14,29 @@
  * limitations under the License.
  */
 
+using IdentityServer3.WsFederation.Logging;
+using IdentityServer3.WsFederation.Services;
 using System;
 using System.ComponentModel;
 using System.IdentityModel.Services;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Thinktecture.IdentityServer.Core.Logging;
-using Thinktecture.IdentityServer.WsFederation.Logging;
-using Thinktecture.IdentityServer.WsFederation.Services;
 
 #pragma warning disable 1591
 
-namespace Thinktecture.IdentityServer.WsFederation.Validation
+namespace IdentityServer3.WsFederation.Validation
 {
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class SignInValidator
     {
         private readonly static ILog Logger = LogProvider.GetCurrentClassLogger();
         private readonly IRelyingPartyService _relyingParties;
+        private readonly ICustomWsFederationRequestValidator _customValidator;
 
-        public SignInValidator(IRelyingPartyService relyingParties)
+        public SignInValidator(IRelyingPartyService relyingParties, ICustomWsFederationRequestValidator customValidator)
         {
             _relyingParties = relyingParties;
+            _customValidator = customValidator;
         }
 
         public async Task<SignInValidationResult> ValidateAsync(SignInRequestMessage message, ClaimsPrincipal subject)
@@ -79,6 +80,18 @@ namespace Thinktecture.IdentityServer.WsFederation.Validation
             result.RelyingParty = rp;
             result.SignInRequestMessage = message;
             result.Subject = subject;
+
+            var customResult = await _customValidator.ValidateSignInRequestAsync(result);
+            if (customResult.IsError)
+            {
+                LogError("Error in custom validation: " + customResult.Error, result);
+                return new SignInValidationResult
+                    {
+                        IsError = true,
+                        Error = customResult.Error,
+                        ErrorMessage = customResult.ErrorMessage,
+                    };
+            }
 
             LogSuccess(result);
             return result;

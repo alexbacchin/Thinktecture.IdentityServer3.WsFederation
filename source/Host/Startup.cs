@@ -1,12 +1,13 @@
 ﻿using Host.Config;
+using IdentityServer3.Core.Configuration;
+using IdentityServer3.Core.Logging;
+using IdentityServer3.Host.Config;
+using IdentityServer3.WsFederation.Configuration;
+using IdentityServer3.WsFederation.Models;
+using IdentityServer3.WsFederation.Services;
 using Owin;
+using Serilog;
 using System.Collections.Generic;
-using Thinktecture.IdentityServer.Core.Configuration;
-using Thinktecture.IdentityServer.Core.Logging;
-using Thinktecture.IdentityServer.Host.Config;
-using Thinktecture.IdentityServer.WsFederation.Configuration;
-using Thinktecture.IdentityServer.WsFederation.Models;
-using Thinktecture.IdentityServer.WsFederation.Services;
 
 namespace Host
 {
@@ -14,14 +15,17 @@ namespace Host
     {
         public void Configuration(IAppBuilder app)
         {
-            LogProvider.SetCurrentLogProvider(new DiagnosticsTraceLogProvider());
+            // setup serilog to use diagnostics trace
+            Log.Logger = new LoggerConfiguration()
+                .WriteTo.Trace(outputTemplate: "{Timestamp} [{Level}] ({Name}){NewLine} {Message}{NewLine}{Exception}")
+                .CreateLogger();
 
             app.Map("/core", coreApp =>
             {
-                var factory = InMemoryFactory.Create(
-                    users: Users.Get(),
-                    clients: Clients.Get(),
-                    scopes: Scopes.Get());
+                var factory = new IdentityServerServiceFactory()
+                    .UseInMemoryUsers(Users.Get())
+                    .UseInMemoryClients(Clients.Get())
+                    .UseInMemoryScopes(Scopes.Get());
 
                 var options = new IdentityServerOptions
                 {
