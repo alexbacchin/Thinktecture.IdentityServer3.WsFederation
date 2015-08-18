@@ -68,9 +68,15 @@ namespace IdentityServer3.WsFederation.ResponseHandling
                 RequestedSecurityToken = new RequestedSecurityToken(token)
             };
 
+            //var serializer = new WSFederationSerializer(
+            //    new WSTrust13RequestSerializer(),
+            //    new WSTrust13ResponseSerializer());
+
+
             var serializer = new WSFederationSerializer(
-                new WSTrust13RequestSerializer(),
-                new WSTrust13ResponseSerializer());
+              new WSTrustFeb2005RequestSerializer(),
+              new WSTrustFeb2005ResponseSerializer());
+
 
             var mgr = SecurityTokenHandlerCollectionManager.CreateEmptySecurityTokenHandlerCollectionManager();
             mgr[SecurityTokenHandlerCollectionManager.Usage.Default] = CreateSupportedSecurityTokenHandler();
