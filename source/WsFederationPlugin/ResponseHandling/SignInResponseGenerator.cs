@@ -100,7 +100,8 @@ namespace IdentityServer3.WsFederation.ResponseHandling
             {
                 var ctx = new ProfileDataRequestContext
                 {
-                    Subject = validationResult.Subject
+                    Subject = validationResult.Subject,
+                    AllClaimsRequested = true
                 };
                 await _users.GetProfileDataAsync(ctx);
                 
@@ -189,7 +190,7 @@ namespace IdentityServer3.WsFederation.ResponseHandling
 
             if (validationResult.RelyingParty.EncryptingCertificate != null)
             {
-                descriptor.EncryptingCredentials = new X509EncryptingCredentials(validationResult.RelyingParty.EncryptingCertificate);
+                descriptor.EncryptingCredentials = new EncryptedKeyEncryptingCredentials(validationResult.RelyingParty.EncryptingCertificate);
             }
 
             return CreateSupportedSecurityTokenHandler().CreateToken(descriptor);
